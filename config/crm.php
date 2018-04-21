@@ -12,5 +12,12 @@ return [
 		"WIP",
 		"Done",
 		"Closed"
+	],
+	"badges" => [
+		"danger",
+		"warning",
+		"primary",
+		"success",
+		"secondary"
 	]
 ];

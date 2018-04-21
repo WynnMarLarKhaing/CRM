@@ -12,6 +12,8 @@ Auth::routes();
 
 Route::get('/', 'IssueController@index');
 Route::get('/home', 'IssueController@index')->name('home');
+Route::get('/issues/filter/{type}', 'IssueController@filter');
+
 
 /*Customer Routes*/
 Route::get('/customers','CustomerController@index');

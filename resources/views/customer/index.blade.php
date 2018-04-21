@@ -35,7 +35,7 @@
 			</tr>
 
 			@endforeach
-		</table>
+		</table>	
 
 		{{ $customers->links() }}		
 	</div>	

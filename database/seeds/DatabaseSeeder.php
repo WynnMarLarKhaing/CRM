@@ -42,13 +42,13 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        for($i=0; $i<5; $i++){
+        for($i=0; $i<10; $i++){
             DB::table('issues')->insert([
                 'subject' => $faker->realText(40),
                 'detail' => $faker->realText(200),
                 'customer_id' => rand(1,10),
-                'product_id' => rand(1,10),
-                'status' => rand(1,5),
+                'product_id' => rand(1,5),
+                'status' => rand(1,4),
                 'user_id' => rand(1,2)
             ]);
         }

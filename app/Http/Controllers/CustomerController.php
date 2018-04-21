@@ -8,7 +8,7 @@ class CustomerController extends Controller
 {
    public function index(){
    		return view('customer/index',[
-   			'customers' => Customer::paginate(5)
+   			'customers' => Customer::orderBy('id','DESC')->paginate(5)
    		]);
    }
 
