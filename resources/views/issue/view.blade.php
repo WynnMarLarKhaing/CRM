@@ -14,10 +14,36 @@
 				  <div class="card-footer">
 				  	<div class="row">
 				  		<div class="col-md-6">
-				  			{{ $issue->created_at }}
+				  			@if($issue->status != 4)
+				  			<div class="btn-group">
+						  		<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						    		{{ config('crm.status')[$issue->status] }}
+						  		</button>
+							    <div class="dropdown-menu">
+							  		@foreach(config('crm.status') as $key=>$status)
+								  		@if($status != 'Closed')
+								  			<a class="dropdown-item" href="{{url('/issues/status/'.$issue->id.'/'.$key )}}">{{ $status }}</a>
+								  		@endif
+							  		@endforeach						    
+							  	</div>
+							</div>
+							@endif
+
+							{{ $issue->created_at }}
 					  	</div>
 					  	<div class="col-md-6 text-right" >
-					  		<a href="{{url('/issues/edit/'.$issue->id)}}" class="btn btn-warning"><i class="fa fa-times-circle"></i>&nbsp;Close</a>
+					  		@if($issue->status != 4)
+						  		<a href="{{url('/issues/status/'.$issue->id.'/4')}}" class="btn btn-warning">
+						  			<i class="fa fa-times-circle"></i>&nbsp;Close
+						  		</a>
+					  		@endif
+
+					  		@if($issue->status == 4)
+					  		<a href="{{url('/issues/status/'.$issue->id.'/0')}}" class="btn btn-warning">
+					  			Re-Open
+					  		</a>
+					  		@endif
+
 					  		<a href="{{url('/issues/edit/'.$issue->id)}}" class="btn btn-light">Edit</a>
 					  		<a href="{{url('/issues/delete/'.$issue->id)}}"  class="btn btn-danger"><i class="fa fa-trash"></i></a>
 					  	</div>	
@@ -28,21 +54,30 @@
 				<hr>
 
 				<h3><i class="fa fa-comments"></i>&nbsp;Comments</h3>
-				<div class="card">
-					<div class="card-body">
-						Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-						consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-						proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-					</div>
-				</div>
-				<br>
-				<form method="POST">
+
+				 @foreach($issue->comments as $comment)
+				 	<div class="card">
+                        <div class="card-body">
+                            <div>
+                                <i class="fa fa-user"></i> <b>{{ $comment->user->name }}</b>
+                                <small class="text-mute">({{ $comment->created_at->diffForHumans() }})</small>
+
+                                <a href="{{ url('comments/delete/' . $comment->id) }}" class="text-danger" style="float:right">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </div>
+                            <br>
+                            {{ $comment->comments }}
+                        </div>
+                    </div>
+                    <br>
+                @endforeach				 
+				
+				<form method="POST" action="{{ url('comments/add') }}">
 					{{ csrf_field() }}
 					<div class="form-group">
-						<textarea name="comment" class="form-control"></textarea>
+						<input type="hidden" name="issue_id" value={{ $issue->id}}>
+						<textarea name="comments" class="form-control"></textarea>
 					</div>
 					<input type="submit" value="Add Comment" class="btn btn-primary">
 				</form>
@@ -51,28 +86,14 @@
 			<div class="col-md-4">
 				<div class="card">
 					<div class="card-header">
-						<b><i class="fa fa-thermometer-empty"></i>&nbsp;Status</b>
-					</div>
-					<div class="card-body">
-						<div class="btn-group">
-						  <button type="button" class="btn btn-{{ config('crm.badges')[$issue->status]}} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						    {{ config('crm.status')[$issue->status] }}
-						  </button>
-						  <div class="dropdown-menu">
-						  	@foreach(config('crm.status') as $status)
-						  		@if($status != 'Closed')
-						  			<a class="dropdown-item" href="#">{{ $status }}</a>
-						  		@endif
-						  	@endforeach						    
-						  </div>
-						</div>						
-					</div>
-				</div>
-				<br>
-
-				<div class="card">
-					<div class="card-header">
 						<b><i class="fa fa-usery"></i>&nbsp;Assigned To</b>
+						
+						<a href="#" class="dropdown-toggle" style="float:right;text-decoration:none;" data-toggle="dropdown">Re-assign</a>
+						<div class="dropdown-menu">
+							@foreach($users as $user)
+								<a href="{{url('/issues/assign/'.$issue->id.'/'.$user->id)}}" class="dropdown-item">{{ $user->name}}</a>
+							@endforeach
+						</div>
 					</div>
 					<div class="card-body">
 						<b>Name: </b>{{ $issue->user->name }}<br>

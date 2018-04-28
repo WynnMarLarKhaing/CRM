@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Issue;
 use App\Customer;
 use App\Product;
+use App\User;
 
 class IssueController extends Controller
 {
@@ -15,7 +16,7 @@ class IssueController extends Controller
     public function index()
     {
    		return view('issue/index',[
-   			'issues' => Issue::orderBy('id','DESC')->paginate(5),
+   			'issues' => Issue::where('status','<',4)->orderBy('id','DESC')->paginate(5),
    			'type' => 'all'
    		]);
     }
@@ -81,9 +82,58 @@ class IssueController extends Controller
     	return back()->withErrors($validator);
     }
 
+    public function edit($id){      
+      return view("issue/edit",[
+        'issue' => Issue::find($id)
+      ]);
+    }
+
+    public function update($id){
+        $validator = validator(request()->all(),[         
+          "subject" => "required",
+          "detail" => "required"          
+        ]);
+
+        if($validator->passes()){
+          $issue = Issue::find($id);
+          $issue->subject = request()->subject;
+          $issue->detail = request()->detail;          
+          $issue->save();
+
+          return redirect('issues/view/'.$id);
+        }
+        return back()->withErrors($validator);
+    }
+
+    public function status($id,$status)
+    {
+      $issue = Issue::find($id);
+      $issue->status = $status;
+      $issue->save();
+
+      return back()->with('info','Status changed');
+    }
+
+    public function assign($id,$user)
+    {
+      $issue = Issue::find($id);
+      $issue->user_id = $user;
+      $issue->save();
+
+      return back()->with('info','Re-assigned');
+    }
+
     public function view($id){
     	return view('issue/view',[
-   			'issue' => Issue::find($id)
+   			'issue' => Issue::find($id),
+        'users' => User::all()
    		]);
+    }
+
+    public function delete($id){
+      $issue = Issue::find($id);
+      $issue->delete();
+
+      return redirect('issues');
     }
 }

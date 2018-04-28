@@ -16,7 +16,11 @@ Route::get('/issues/filter/{type}', 'IssueController@filter');
 Route::get('/issues/add', 'IssueController@add');
 Route::get('/issues/view/{id}','IssueController@view');
 Route::post('/issues/create', 'IssueController@create');
-
+Route::get('/issues/edit/{id}','IssueController@edit');
+Route::post('/issues/update/{id}','IssueController@update');
+Route::get('/issues/delete/{id}','IssueController@delete');
+Route::get('/issues/status/{id}/{status}','IssueController@status');
+Route::get('/issues/assign/{id}/{user}','IssueController@assign');
 
 /*Customer Routes*/
 Route::get('/customers','CustomerController@index');
@@ -46,3 +50,7 @@ Route::get('/issues','IssueController@index');
 // Route::get('/products/delete/{id}','ProductController@delete');
 
 // Route::resources('/customers','CustomerController')
+
+/* Comments */
+Route::post('/comments/add','CommentController@create');
+Route::get('/comments/delete/{id}','CommentController@delete');
