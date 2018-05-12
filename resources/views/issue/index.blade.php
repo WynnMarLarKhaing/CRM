@@ -1,7 +1,7 @@
 @extends("layouts/app")
 
 @section("content")
-	<div class="container">	
+	<div class="container">		
 		<ul class="nav nav-tabs">
 		  <li class="nav-item">
 		    <a class="nav-link @if($type=='all') active @endif" href="{{ url('issues') }}"><i class="fa fa-list"></i>&nbsp;All Issues</a>
@@ -37,7 +37,12 @@
 			@foreach($issues as $issue)
 				<tr>
 					<td>{{ $issue->id }}</td>
-					<td><a href="{{url('/issues/view/'.$issue->id)}}">{{ $issue->subject }}</a></td>
+					<td>
+						<a href="{{url('/issues/view/'.$issue->id)}}">{{ $issue->subject }}</a>
+						@if(count($issue->comments))
+							<span class="badge badge-pill badge-secondary">{{ count($issue->comments) }}</span>
+						@endif
+					</td>
 					<td><a href="{{url('/customers/view/'.$issue->customer->id)}}">{{ $issue->customer->name }}</a></td> 
 					<td><a href="{{url('/products/view/'.$issue->product->id)}}">{{ $issue->product->name ?? '-' }}</a></td>
 					<td>{{ $issue->user->name ?? '-'}}</td>

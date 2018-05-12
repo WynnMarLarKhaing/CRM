@@ -4,6 +4,15 @@
 	<div class="container">		
 		<div class="row">
 			<div class="col-md-8">
+				@if($errors->any())
+					<div class="alert alert-warning">
+						<ul>
+							@foreach($errors->all() as $error)
+								<li>{{ $error }}</li>
+							@endforeach
+						</ul>
+					</div>
+				@endif
 				<div class="card text-white bg-{{ config('crm.badges')[$issue->status]}}" >
 				  <div class="card-header">
 				   <b style="font-size: 1.5em"><i class="fa fa-bug"></i>&nbsp;{{ $issue->subject }}</b>

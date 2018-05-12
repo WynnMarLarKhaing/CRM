@@ -3,19 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Customer;
+use App\Http\Resources\Customer as CustomerResource;
+use App\Http\Resources\CustomerCollection;
 
 class CustomerController extends Controller
 {
    public function index(){
-   		return view('customer/index',[
-   			'customers' => Customer::orderBy('id','DESC')->paginate(5)
-   		]);
+   		// return view('customer/index',[
+   		// 	'customers' => Customer::orderBy('id','DESC')->paginate(5)
+   		// ]);
+      return new CustomerCollection(Customer::paginate(5));
    }
 
    public function view($id){
-   		return view('customer/view',[
-   			'customer' => Customer::find($id)
-   		]);
+   		// return view('customer/view',[
+   		// 	'customer' => Customer::find($id)
+   		// ]);
+      return new CustomerResource(Customer::find($id));
    }
 
    public function add(){

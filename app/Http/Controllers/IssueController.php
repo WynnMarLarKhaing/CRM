@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use Gate;
 use App\Issue;
 use App\Customer;
 use App\Product;
@@ -107,6 +109,12 @@ class IssueController extends Controller
 
     public function status($id,$status)
     {
+      // if($status == 4 && auth->user()->role != 2){
+      //   return back()->with('info',"Unthorized to close issues");
+      // }
+      if (Gate::denies('close', $status)) {
+        return back()->with('info',"Unthorized to close issues");
+      }
       $issue = Issue::find($id);
       $issue->status = $status;
       $issue->save();
@@ -116,6 +124,9 @@ class IssueController extends Controller
 
     public function assign($id,$user)
     {
+      if (Gate::denies('assign')) {
+        return back()->with('info',"Unthorized to assign issues");
+      }
       $issue = Issue::find($id);
       $issue->user_id = $user;
       $issue->save();
